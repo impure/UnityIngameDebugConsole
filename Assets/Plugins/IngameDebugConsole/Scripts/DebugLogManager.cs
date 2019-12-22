@@ -196,6 +196,7 @@ namespace IngameDebugConsole
 		// Opening and closing can add extra characters and move the cursor so we remember some values so we can
 		// restore them
 		private int? textLengthOnHide;
+		private int? textInputPositionOnHide;
 
 #if !UNITY_EDITOR && UNITY_ANDROID
 		private DebugLogLogcatListener logcatListener;
@@ -421,6 +422,12 @@ namespace IngameDebugConsole
 			if (textLengthOnHide != null && commandInputField.text.Length - 1 == textLengthOnHide.Value
 				&& textLengthOnHide.Value >= 1) {
 				commandInputField.text = commandInputField.text.Substring(0, commandInputField.text.Length - 2);
+				if (textInputPositionOnHide != null) {
+					textInputPositionOnHide = textInputPositionOnHide - 1;
+				}
+			}
+			if (textInputPositionOnHide != null) {
+				commandInputField.caretPosition = textInputPositionOnHide.Value;
 			}
 		}
 
@@ -457,6 +464,8 @@ namespace IngameDebugConsole
 			isLogWindowVisible = false;
 
 			textLengthOnHide = commandInputField.text.Length;
+			Debug.Log(commandInputField.caretPosition);
+			textInputPositionOnHide = commandInputField.caretPosition;
 		}
 
 		// Command field input is changed, check if command is submitted
